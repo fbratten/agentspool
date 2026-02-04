@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentspool"
+version = "0.4.2"
+description = "Agent Communication & Coordination System with MCP server"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.25.0",
+    "mcp[cli]>=1.0.0",
+]
+
+[project.optional-dependencies]
+relay = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23.0",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+]
+
+[project.scripts]
+agentspool-mcp = "agent_comm_mcp.server:main"
+agent-comm-mcp = "agent_comm_mcp.server:main"  # Legacy alias
+
+[tool.hatch.build.targets.wheel]
+packages = ["agent_comm", "agent_comm_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

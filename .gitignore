@@ -1,0 +1,38 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+
+# SQLite databases (generated at runtime)
+data/coordination.db
+data/coordination.db-wal
+data/coordination.db-shm
+data/registry.json
+data/inboxes/
+
+# Relay server (generated at runtime)
+data/relay-secrets.json
+data/relay.db
+data/relay.db-wal
+data/relay.db-shm
+data/relay-registry.json
+
+# Minna memory (per-project)
+.spine/minna.db
+.spine/minna.db-wal
+.spine/minna.db-shm
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+.venv/
