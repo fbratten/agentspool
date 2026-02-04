@@ -1,6 +1,6 @@
-# Claude Code ↔ OpenClaw Agent Integration Guide
+# Coding Agent ↔ OpenClaw Agent Integration Guide
 
-**Purpose:** Enable bidirectional messaging between Claude Code (running on Windows) and OpenClaw/Clawdbot gateway agents (running in WSL2)
+**Purpose:** Enable bidirectional messaging between Coding Agent (running on Windows) and OpenClaw/Clawdbot gateway agents (running in WSL2)
 
 **Version:** 1.0.0
 **Last Updated:** 2026-02-03
@@ -17,7 +17,7 @@
 5. [Agent Registration](#agent-registration)
 6. [Message Flow](#message-flow)
 7. [OpenClaw Bridge Integration](#openclaw-bridge-integration)
-8. [Claude Code Integration Patterns](#claude-code-integration-patterns)
+8. [Coding Agent Integration Patterns](#coding-agent-integration-patterns)
 9. [End-to-End Walkthrough](#end-to-end-walkthrough)
 10. [Troubleshooting](#troubleshooting)
 11. [Current Limitations](#current-limitations)
@@ -30,18 +30,18 @@
 
 ### The Problem
 
-Claude Code and OpenClaw gateway agents operate in different contexts:
+Coding Agent and OpenClaw gateway agents operate in different contexts:
 
 | Component | Runtime | Location |
 |-----------|---------|----------|
-| Claude Code | Windows terminal session | Windows 11 host |
+| Coding Agent | Windows terminal session | Windows 11 host |
 | OpenClaw Agent | Gateway service | WSL2 Linux instance |
 
 By default, communication is **one-way only**:
 
 ```
-Claude Code → OpenClaw Agent ✅  (via `wsl -d <instance> -e openclaw agent --message "..."`)
-OpenClaw Agent → Claude Code ❌  (no mechanism)
+Coding Agent → OpenClaw Agent ✅  (via `wsl -d <instance> -e openclaw agent --message "..."`)
+OpenClaw Agent → Coding Agent ❌  (no mechanism)
 ```
 
 ### The Solution
@@ -56,7 +56,7 @@ OpenClaw Agent → Claude Code ❌  (no mechanism)
 This enables **true bidirectional communication**:
 
 ```
-Claude Code ←→ Message Spool ←→ OpenClaw Agent
+Coding Agent ←→ Message Spool ←→ OpenClaw Agent
      ↓              ↓              ↓
    send()      coordination.db   poll()
    poll()                        send()
@@ -71,7 +71,7 @@ Claude Code ←→ Message Spool ←→ OpenClaw Agent
 │                        Windows 11 Host                          │
 │                                                                 │
 │  ┌─────────────────┐                                           │
-│  │   Claude Code   │                                           │
+│  │   Coding Agent   │                                           │
 │  │   (Terminal)    │                                           │
 │  └────────┬────────┘                                           │
 │           │                                                     │
@@ -122,7 +122,7 @@ Claude Code ←→ Message Spool ←→ OpenClaw Agent
 - OpenClaw or Clawdbot gateway installed and running
 
 **On Windows host:**
-- Claude Code CLI installed
+- Coding Agent CLI installed
 - WSL2 configured with target instance
 
 ### Required Access
@@ -227,12 +227,12 @@ cd ~/projects/agent-comm
   -d wsl-main
 ```
 
-### Register Claude Code
+### Register Coding Agent
 
 ```bash
 wsl -d <your-instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm register claude-code \
+.venv/bin/python -m agent_comm register coding-agent \
   -c "code,implementation,bash,mcp" \
   -d windows-host
 '
@@ -252,7 +252,7 @@ cd ~/projects/agent-comm
 ```
 Registered agents (2):
   my-assistant [active] caps=['research', 'chat', 'gmail', 'tools'] device=wsl-main transport=sqlite
-  claude-code [active] caps=['code', 'implementation', 'bash', 'mcp'] device=windows-host transport=sqlite
+  coding-agent [active] caps=['code', 'implementation', 'bash', 'mcp'] device=windows-host transport=sqlite
 ```
 
 ---
@@ -267,7 +267,7 @@ All messages follow the MessageV2 schema:
 {
   "id": "msg_20260203_143022_a1b2c3",
   "version": "2.0",
-  "from": "claude-code",
+  "from": "coding-agent",
   "to": "my-assistant",
   "subject": "Implementation task",
   "body": "Please implement the user authentication module.",
@@ -312,7 +312,7 @@ queued → leased → acked
 **Example:**
 
 ```bash
-.venv/bin/python -m agent_comm send claude-code my-assistant \
+.venv/bin/python -m agent_comm send coding-agent my-assistant \
   "Please research AI agent frameworks and summarize findings" \
   -s "Research task" \
   --priority high
@@ -342,7 +342,7 @@ Sent: msg_20260203_143022_a1b2c3
 Found 1 message(s) for my-assistant:
 
   ID: msg_20260203_143022_a1b2c3
-  From: claude-code
+  From: coding-agent
   Subject: Research task
   Body: Please research AI agent frameworks and summarize findings
 ```
@@ -386,12 +386,12 @@ The OpenClaw bridge connects agent-comm to OpenClaw/Clawdbot gateway agents.
 ### How the Bridge Works
 
 ```
-1. Claude Code sends message → Spool (queued)
+1. Coding Agent sends message → Spool (queued)
 2. Bridge polls spool for messages to gateway agent
 3. Bridge calls: openclaw agent --message "<body>" --json
 4. Gateway agent processes and responds
 5. Bridge sends response back → Spool
-6. Claude Code polls for response
+6. Coding Agent polls for response
 ```
 
 ### Bridge Command
@@ -431,23 +431,23 @@ openclaw agent --agent main --message "<message-body>" --json
 
 ---
 
-## Claude Code Integration Patterns
+## Coding Agent Integration Patterns
 
 ### Pattern 1: Direct CLI (Simplest)
 
-Execute agent-comm commands directly from Claude Code via bash:
+Execute agent-comm commands directly from Coding Agent via bash:
 
 ```bash
 # Send to gateway agent
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm send claude-code <agent> "Your message" -s "Subject"
+.venv/bin/python -m agent_comm send coding-agent <agent> "Your message" -s "Subject"
 '
 
 # Poll for responses
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm poll claude-code
+.venv/bin/python -m agent_comm poll coding-agent
 '
 ```
 
@@ -461,7 +461,7 @@ Create a wrapper script for convenience:
 #!/bin/bash
 # Usage: ./cc-send.sh <to-agent> "<message>" "<subject>"
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm send claude-code "$1" "$2" -s "$3"
+.venv/bin/python -m agent_comm send coding-agent "$1" "$2" -s "$3"
 ```
 
 **File: `~/projects/agent-comm/scripts/cc-poll.sh`**
@@ -470,12 +470,12 @@ cd ~/projects/agent-comm
 #!/bin/bash
 # Usage: ./cc-poll.sh
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm poll claude-code
+.venv/bin/python -m agent_comm poll coding-agent
 ```
 
-### Pattern 3: Claude Code Skill
+### Pattern 3: Coding Agent Skill
 
-Create a Claude Code skill for integrated messaging:
+Create a Coding Agent skill for integrated messaging:
 
 **File: `.claude/skills/agent-comm/SKILL.md`**
 
@@ -494,13 +494,13 @@ Use agent-comm to communicate with registered agents.
 ## Send a Message
 
 ```bash
-wsl -d <instance> -e bash -c 'cd ~/projects/agent-comm && .venv/bin/python -m agent_comm send claude-code <agent> "$ARGUMENTS" -s "From Claude Code"'
+wsl -d <instance> -e bash -c 'cd ~/projects/agent-comm && .venv/bin/python -m agent_comm send coding-agent <agent> "$ARGUMENTS" -s "From Coding Agent"'
 ```
 
 ## Poll for Responses
 
 ```bash
-wsl -d <instance> -e bash -c 'cd ~/projects/agent-comm && .venv/bin/python -m agent_comm poll claude-code'
+wsl -d <instance> -e bash -c 'cd ~/projects/agent-comm && .venv/bin/python -m agent_comm poll coding-agent'
 ```
 ```
 
@@ -558,12 +558,12 @@ cd ~/projects/agent-comm
 '
 ```
 
-### Step 1: Claude Code Sends Task
+### Step 1: Coding Agent Sends Task
 
 ```bash
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm send claude-code my-assistant \
+.venv/bin/python -m agent_comm send coding-agent my-assistant \
   "Please analyze the authentication module and suggest improvements" \
   -s "Code review request" \
   --priority high
@@ -596,24 +596,24 @@ openclaw agent --agent main --message "[agent-comm msg_20260203_150000_abc123] P
 ```bash
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm send my-assistant claude-code \
+.venv/bin/python -m agent_comm send my-assistant coding-agent \
   "Analysis complete. Found 3 issues: 1) Missing rate limiting, 2) Weak password hashing, 3) No session timeout. Recommendations attached." \
   -s "Re: Code review request"
 '
 ```
 
-### Step 4: Claude Code Receives Response
+### Step 4: Coding Agent Receives Response
 
 ```bash
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
-.venv/bin/python -m agent_comm poll claude-code
+.venv/bin/python -m agent_comm poll coding-agent
 '
 ```
 
 **Output:**
 ```
-Found 1 message(s) for claude-code:
+Found 1 message(s) for coding-agent:
 
   ID: msg_20260203_150130_def456
   From: my-assistant
@@ -627,7 +627,7 @@ Found 1 message(s) for claude-code:
 wsl -d <instance> -e bash -c '
 cd ~/projects/agent-comm
 .venv/bin/python -m agent_comm ack msg_20260203_150000_abc123 my-assistant
-.venv/bin/python -m agent_comm ack msg_20260203_150130_def456 claude-code
+.venv/bin/python -m agent_comm ack msg_20260203_150130_def456 coding-agent
 '
 ```
 
@@ -795,7 +795,7 @@ if bridge.is_available():
 
 Add webhook support for real-time delivery:
 - Gateway calls webhook URL when message arrives
-- Claude Code hosts lightweight webhook receiver
+- Coding Agent hosts lightweight webhook receiver
 - Eliminates polling latency
 
 ### 3. Systemd Service
@@ -863,13 +863,13 @@ WantedBy=default.target
 - [README.md](README.md) — Project overview and quick start
 - [docs/manual/](docs/manual/) — Full user manual
 - [CHANGELOG.md](CHANGELOG.md) — Version history
-- [CLAUDE.md](CLAUDE.md) — Claude Code project guidelines
+- [CLAUDE.md](CLAUDE.md) — Coding Agent project guidelines
 
 ---
 
 ## Human Setup Guide (Quick Reference)
 
-For humans setting up Claude Code to communicate with an OpenClaw agent:
+For humans setting up Coding Agent to communicate with an OpenClaw agent:
 
 ### 1. Clone & Install
 
@@ -887,14 +887,14 @@ pip install -e .
 
 ```bash
 python -m agent_comm register my-gateway-agent -c "chat,tools" -d wsl
-python -m agent_comm register claude-code -c "code,bash" -d windows
+python -m agent_comm register coding-agent -c "code,bash" -d windows
 ```
 
 ### 3. Test Communication
 
 ```bash
-# From Claude Code (via WSL)
-python -m agent_comm send claude-code my-gateway-agent "Hello!" -s "Test"
+# From Coding Agent (via WSL)
+python -m agent_comm send coding-agent my-gateway-agent "Hello!" -s "Test"
 
 # Check delivery
 python -m agent_comm poll my-gateway-agent

@@ -171,7 +171,7 @@ class Coordinator:
     def get_minna_registration_calls(self, agent_id: str) -> list[dict]:
         """Get Minna MCP tool calls needed to register an agent.
 
-        Returns the calls as dicts — the caller (CLI/Claude Code) executes them.
+        Returns the calls as dicts — the caller (CLI/agent) executes them.
         """
         profile = self.registry.get(agent_id)
         if not profile:

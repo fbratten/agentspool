@@ -66,9 +66,9 @@ def test_two_agents():
         # --- Test 2: Send message A → B ---
         print("\n2. Send message A → B")
         msg_id = coord.send(
-            from_agent="claude-code-pc1",
+            from_agent="agent-a",
             to_agent="test-agent-pc1",
-            body="Hello from Claude Code!",
+            body="Hello from Agent A!",
             subject="Test message",
             priority=Priority.NORMAL,
             conversation_id="conv_test_001",
@@ -81,8 +81,8 @@ def test_two_agents():
         check("Got 1 message", len(messages) == 1, f"got {len(messages)}")
         if messages:
             msg = messages[0]
-            check("From correct", msg.from_agent == "claude-code-pc1")
-            check("Body correct", msg.body == "Hello from Claude Code!")
+            check("From correct", msg.from_agent == "agent-a")
+            check("Body correct", msg.body == "Hello from Agent A!")
             check("Subject correct", msg.subject == "Test message")
             check("Conversation ID", msg.routing.conversation_id == "conv_test_001")
 

@@ -32,7 +32,7 @@ class OpenClawConfig:
     # The agent ID in the agent-comm registry
     agent_id: str
 
-    # WSL instance name (e.g., "Nelly")
+    # WSL instance name (e.g., "MyAgent")
     wsl_instance: str
 
     # OpenClaw agent name within the gateway (usually "main")

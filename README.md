@@ -200,7 +200,7 @@ python3 scripts/test_two_agents.py
 | Document | Description |
 |----------|-------------|
 | [README.md](README.md) | Project overview and quick start |
-| [docs/CLAUDE_CODE_INTEGRATION.md](docs/CLAUDE_CODE_INTEGRATION.md) | AI agent + OpenClaw integration guide |
+| [docs/AGENT_INTEGRATION.md](docs/AGENT_INTEGRATION.md) | AI agent + OpenClaw integration guide |
 | [docs/manual/](docs/manual/) | Full user manual |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
 

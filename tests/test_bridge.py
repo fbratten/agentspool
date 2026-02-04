@@ -19,15 +19,15 @@ class TestOpenClawBridge(TestCase):
 
     def setUp(self):
         self.config = OpenClawConfig(
-            agent_id="nelly-pc2",
-            wsl_instance="Nelly",
+            agent_id="gateway-agent",
+            wsl_instance="GatewayAgent",
             openclaw_agent="main",
             timeout_seconds=10,
         )
         self.bridge = OpenClawBridge(self.config)
 
     def test_agent_id(self):
-        self.assertEqual(self.bridge.agent_id, "nelly-pc2")
+        self.assertEqual(self.bridge.agent_id, "gateway-agent")
 
     def test_build_message_text_body_only(self):
         msg = MessageV2.create(from_agent="a", to_agent="b", body="Hello")
@@ -55,7 +55,7 @@ class TestOpenClawBridge(TestCase):
         cmd = self.bridge._build_command("Hello world")
         self.assertEqual(cmd[0], "wsl")
         self.assertEqual(cmd[1], "-d")
-        self.assertEqual(cmd[2], "Nelly")
+        self.assertEqual(cmd[2], "GatewayAgent")
         self.assertEqual(cmd[3], "-e")
         self.assertEqual(cmd[4], "bash")
         self.assertEqual(cmd[5], "-c")

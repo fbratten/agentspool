@@ -1,6 +1,6 @@
 """agent-comm MCP Server.
 
-Exposes the agent-comm library as MCP tools for Claude Code and other AI agents.
+Exposes the agent-comm library as MCP tools for AI coding agents.
 
 Usage:
     python -m agent_comm_mcp.server

@@ -57,7 +57,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- **MCP server** (`agent_comm_mcp/`) — Exposes agent-comm as 14 MCP tools via FastMCP for Claude Code and other AI agents
+- **MCP server** (`agent_comm_mcp/`) — Exposes agent-comm as 14 MCP tools via FastMCP for AI coding agents
   - `agent_comm_mcp/server.py` — FastMCP server with lazy Coordinator singleton, 11 Pydantic input models, env var configuration
   - **Messaging tools:** `comm_send`, `comm_poll`, `comm_ack`, `comm_nack`
   - **Registry tools:** `comm_register_agent`, `comm_discover_agents`, `comm_heartbeat`, `comm_deregister`
@@ -152,4 +152,4 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Known Integration Target
 
-- **OpenClaw/Clawdbot gateway** — Nelly and bot agents run as gateway services in WSL2 instances. Communication via `openclaw agent --agent main --message "..." --json` CLI, bypassing channel routing. WebSocket gateway on `localhost:18789`. Unidirectional initiation (Claude Code → agent). This is the primary target for Phase 2.
+- **OpenClaw/Clawdbot gateway** — Gateway agents run as services in WSL2 instances. Communication via `openclaw agent --agent main --message "..." --json` CLI, bypassing channel routing. WebSocket gateway on `localhost:18789`. Unidirectional initiation (calling agent → gateway agent). This is the primary target for Phase 2.

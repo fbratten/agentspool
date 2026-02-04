@@ -83,7 +83,7 @@ class AgentProfile(BaseModel):
 
 | Agent | Capabilities | Transport |
 |-------|--------------|-----------|
-| `claude-code` | code, bash, implementation | sqlite |
+| `coding-agent` | code, bash, implementation | sqlite |
 | `research-bot` | research, summarize, cite | sqlite |
 | `approval-queue` | human-review, approve, reject | http |
 

@@ -1,12 +1,12 @@
 """Agent Registry — backed by Minna Memory (used as-is via MCP tools).
 
 This module provides a local-first registry with optional Minna Memory
-integration. When used from Claude Code (with MCP access), the register/discover
+integration. When used from AI coding agents (with MCP access), the register/discover
 calls will also write to Minna. When Minna is unavailable, falls back to
 a local JSON file.
 
 Note: Minna MCP calls are documented here but executed by the caller
-(coordinator or CLI) since MCP tools are invoked at the Claude Code level,
+(coordinator or CLI) since MCP tools are invoked at the agent level,
 not from Python directly. This module manages the local fallback registry.
 """
 

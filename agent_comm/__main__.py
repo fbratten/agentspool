@@ -109,7 +109,7 @@ def main():
     br.add_argument("--direct", action="store_true",
                     help="Direct mode: call openclaw directly (for use inside WSL, no WSL wrapper)")
     br.add_argument("--wsl-instance", "-w", default=None,
-                    help="WSL instance name (required for non-direct mode, e.g., Nelly)")
+                    help="WSL instance name (required for non-direct mode, e.g., MyAgent)")
     br.add_argument("--openclaw-agent", default="main", help="OpenClaw agent name (default: main)")
     br.add_argument("--path-setup", default=None, help="Shell command to set PATH before openclaw")
     br.add_argument("--env", action="append", default=[],
