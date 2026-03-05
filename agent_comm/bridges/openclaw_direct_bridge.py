@@ -200,8 +200,11 @@ class OpenClawDirectBridge(Bridge):
 
         try:
             data = json.loads(stdout)
+            # Try nested format first (result.payloads), then top-level
             payloads = data.get("result", {}).get("payloads", [])
-            texts = [p["text"] for p in payloads if "text" in p]
+            if not payloads:
+                payloads = data.get("payloads", [])
+            texts = [p["text"] for p in payloads if "text" in p and p["text"]]
             if texts:
                 return "\n".join(texts)
             # Fallback: try to get any string content
